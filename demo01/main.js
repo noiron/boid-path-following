@@ -1,4 +1,5 @@
 import { drawGrid, drawPath, index2Px } from './utils';
+import Boid from './Boid';
 
 const WIDTH = 900;
 const HEIGHT = 600;
@@ -14,20 +15,38 @@ const ctx = canvas.getContext('2d');
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
 
-const path = [[0, 1], [COLS - 4, 1], [COLS - 4, 4], [6, 4], [6, 7], [COLS - 2, 7], [COLS - 2, ROWS - 1], [0, ROWS - 1]];
+// 可以更改此处的路径起点和终点以查看效果
+const path = [[0, 0], [COLS - 1, ROWS - 1]];
+// const path = [[0, 0], [ 0, ROWS - 1]];
 
 const boids = [];
 let time = new Date().getTime();
 
 function loop() {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    drawGrid(ctx, COLS, ROWS, GRID_SIZE, null, OFFSET_X, OFFSET_Y);
+    // 画出画面上的网格
+    drawGrid(ctx, COLS, ROWS, GRID_SIZE, OFFSET_X, OFFSET_Y);
+    // 画出路径
     drawPath(ctx, path, OFFSET_X, OFFSET_Y);
+
+    // 每隔一段时间生成一个新的 boid
+    if (new Date().getTime() - time > 2000) {
+        const boid = new Boid({
+            x: OFFSET_X + 20,
+            y: OFFSET_Y + 20,
+            path: path,
+            ctx: ctx,
+        });
+        boids.push(boid);
+        time = new Date().getTime();
+    }
+
+    boids.forEach(boid => {
+        boid.step();
+        boid.draw();
+    });
 
     requestAnimationFrame(loop);
 }
 
-requestAnimationFrame(loop)
-
-
-export { ctx };
+requestAnimationFrame(loop);
