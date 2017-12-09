@@ -16,8 +16,8 @@ canvas.width = WIDTH;
 canvas.height = HEIGHT;
 
 // 可以更改此处的路径起点和终点以查看效果
-const path = [[0, 0], [COLS - 1, ROWS - 1]];
-// const path = [[0, 0], [ 0, ROWS - 1]];
+// const path = [[0, 0], [COLS - 1, ROWS - 1]];
+const path = [[0, 0], [COLS - 4, 0], [COLS - 4, 4], [6, 4], [6, 7], [COLS - 1, ROWS - 1]];
 
 let boids = [];     // 保存所有生成的 boid
 let time = new Date().getTime();

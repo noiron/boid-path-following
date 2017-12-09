@@ -21,6 +21,9 @@ export default class Boid {
         this.dy = 0;
         this.dist = 0;
 
+        this.waypoint = 1;
+        this.angleFlag = 1;
+
         this.radius = 10;
 
         this.reachDesc = false;
@@ -33,13 +36,18 @@ export default class Boid {
             return;
         }
 
-        const end = this.path[this.path.length - 1];    // 终点的网格坐标
-        const target = index2Px(...end);                // 终点的像素坐标
+        const path = this.path;
+        const waypoint = path[this.waypoint];   // 当前目标点的网格坐标
+        const target = index2Px(...waypoint);   // 当前目标点的像素坐标
         this.dx = target.x - this.x;
         this.dy = target.y - this.y;
         this.dist = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-        // 这里根据距离计算出 boid 的运动角度
-        this.angle = Math.atan2(this.dy, this.dx);
+
+        // 判断是否需要转向，如果需要转向，则重新计算角度
+        if (this.angleFlag) {
+            this.angle = Math.atan2(this.dy, this.dx);
+            this.angleFlag = 0;
+        }
 
         const speed = this.speed;
         const angle = this.angle;
@@ -55,7 +63,13 @@ export default class Boid {
             // 则让物体下一时刻处于当前目标点的位置
             this.x = target.x;
             this.y = target.y;
-            this.reachDest = true;
+            if (this.waypoint + 1 >= path.length) {
+                // 到达终点
+                this.reachDest = true;
+            } else {
+                this.waypoint++;
+                this.angleFlag = 1;
+            }
         }
     }
 
