@@ -19,7 +19,7 @@ canvas.height = HEIGHT;
 const path = [[0, 0], [COLS - 1, ROWS - 1]];
 // const path = [[0, 0], [ 0, ROWS - 1]];
 
-const boids = [];
+let boids = [];     // 保存所有生成的 boid
 let time = new Date().getTime();
 
 function loop() {
@@ -41,7 +41,12 @@ function loop() {
         time = new Date().getTime();
     }
 
+    // 过滤 boids 数组中已经达到了终点的元素
+    boids = boids.filter(boid => !boid.reachDest);
     boids.forEach(boid => {
+        if (boid.reachDest) {
+            console.log('stop!');
+        }
         boid.step();
         boid.draw();
     });
